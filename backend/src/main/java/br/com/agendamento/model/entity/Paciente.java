@@ -1,4 +1,4 @@
-package br.com.agendamento.models;
+package br.com.agendamento.model.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;

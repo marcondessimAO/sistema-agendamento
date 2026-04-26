@@ -1,4 +1,4 @@
-package br.com.agendamento.models;
+package br.com.agendamento.model.entity;
 
 import br.com.agendamento.enums.StatusAtendimento;
 import jakarta.persistence.Entity;
