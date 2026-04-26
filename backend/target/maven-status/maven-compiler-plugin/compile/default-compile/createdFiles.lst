@@ -1,0 +1,12 @@
+br\com\agendamento\models\RegistroEnfermaria.class
+br\com\agendamento\AgendamentoApplication.class
+br\com\agendamento\enums\StatusAtendimento.class
+br\com\agendamento\models\Paciente.class
+br\com\agendamento\models\Atendimento.class
+br\com\agendamento\enums\PerfilAcesso.class
+br\com\agendamento\enums\StatusEnfermaria.class
+br\com\agendamento\models\Medico.class
+br\com\agendamento\models\Usuario.class
+br\com\agendamento\models\Servico.class
+br\com\agendamento\models\Enfermaria.class
+br\com\agendamento\models\Prontuario.class
