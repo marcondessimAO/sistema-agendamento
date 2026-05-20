@@ -10,6 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/enfermarias")
+@CrossOrigin(origins = "http://localhost:3000")
 public class EnfermariaController {
 
     private final EnfermariaService service;

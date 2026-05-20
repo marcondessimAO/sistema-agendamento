@@ -1,66 +1,55 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+import Link from "next/link";
 
-export default function Home() {
+export default async function Dashboard() {
+  const res = await fetch("http://localhost:8082/atendimentos", {
+    cache: "no-store",
+  });
+  
+  const atendimentos = res.ok ? await res.json() : [];
+
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>To get started, edit the page.tsx file.</h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+    <main className="p-8 max-w-4xl mx-auto">
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-2xl font-bold">Dashboard de Atendimentos</h1>
+        <Link 
+          href="/agendar" 
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+        >
+          Novo Agendamento
+        </Link>
+      </div>
+
+      <div className="overflow-x-auto bg-white shadow rounded-lg">
+        <table className="min-w-full text-left text-sm whitespace-nowrap text-gray-800">
+          <thead className="uppercase tracking-wider border-b-2 bg-gray-50 text-gray-600">
+            <tr>
+              <th scope="col" className="px-6 py-4">ID</th>
+              <th scope="col" className="px-6 py-4">Data/Hora</th>
+              <th scope="col" className="px-6 py-4">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {atendimentos.map((atendimento: any) => (
+              <tr key={atendimento.id} className="border-b hover:bg-gray-50">
+                <th scope="row" className="px-6 py-4 font-medium">{atendimento.id}</th>
+                <td className="px-6 py-4">{atendimento.dataHora ? new Date(atendimento.dataHora).toLocaleString() : 'N/A'}</td>
+                <td className="px-6 py-4">
+                  <span className="px-2 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">
+                    {atendimento.status}
+                  </span>
+                </td>
+              </tr>
+            ))}
+            {atendimentos.length === 0 && (
+              <tr>
+                <td colSpan={3} className="px-6 py-4 text-center text-gray-500">
+                  Nenhum atendimento encontrado.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+    </main>
   );
 }
