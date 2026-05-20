@@ -1,29 +1,24 @@
-import React from 'react';
+import React from "react";
 
-export default function Badge({ status }: { status: string }) {
-  let colorClass = 'bg-gray-100 text-gray-700 border-gray-200';
-  let label = status;
+const statusConfig: Record<string, { label: string; bg: string; color: string }> = {
+  EM_ESPERA:    { label: "Em Espera",    bg: "rgba(255,132,16,0.1)",  color: "#C96A00" },
+  EM_ATENDIMENTO: { label: "Em Atend.", bg: "rgba(34,114,204,0.1)",  color: "#2272CC" },
+  CONCLUIDO:    { label: "Concluído",    bg: "rgba(0,200,150,0.1)",   color: "#008060" },
+  FINALIZADO:   { label: "Finalizado",   bg: "rgba(0,200,150,0.1)",   color: "#008060" },
+  CANCELADO:    { label: "Cancelado",    bg: "rgba(229,62,62,0.1)",   color: "#C53030" },
+};
 
-  if (status === 'EM_ESPERA') {
-    colorClass = 'bg-amber-50 text-amber-700 border-amber-200/60';
-    label = 'Em Espera';
-  } else if (status === 'CONCLUIDO' || status === 'FINALIZADO') {
-    colorClass = 'bg-emerald-50 text-emerald-700 border-emerald-200/60';
-    label = 'Concluído';
-  } else if (status === 'CANCELADO') {
-    colorClass = 'bg-rose-50 text-rose-700 border-rose-200/60';
-    label = 'Cancelado';
-  } else if (status === 'EM_ATENDIMENTO') {
-    colorClass = 'bg-blue-50 text-blue-700 border-blue-200/60';
-    label = 'Em Atendimento';
-  }
-
+export function Badge({ status }: { status: string }) {
+  const cfg = statusConfig[status] ?? { label: status, bg: "#f1f5f9", color: "#64748b" };
   return (
-    <span className={`px-2.5 py-1 inline-flex text-xs leading-5 font-semibold rounded-full border ${colorClass}`}>
-      <span className="flex items-center gap-1.5">
-        <span className={`w-1.5 h-1.5 rounded-full ${colorClass.split(' ')[1].replace('text-', 'bg-')}`}></span>
-        {label}
-      </span>
+    <span
+      className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wide"
+      style={{ backgroundColor: cfg.bg, color: cfg.color }}
+    >
+      <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: cfg.color }} />
+      {cfg.label}
     </span>
   );
 }
+
+export default Badge;

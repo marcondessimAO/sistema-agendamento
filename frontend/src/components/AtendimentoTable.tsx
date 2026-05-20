@@ -1,49 +1,76 @@
-import React from 'react';
-import Badge from './Badge';
+import React from "react";
+import Badge from "./Badge";
 
 export default function AtendimentoTable({ atendimentos }: { atendimentos: any[] }) {
   return (
-    <div className="bg-white shadow-sm border border-gray-100 rounded-xl overflow-hidden">
+    <div
+      className="bg-white rounded-2xl overflow-hidden"
+      style={{ border: "1px solid var(--ic-border)", boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}
+    >
       <div className="overflow-x-auto">
         <table className="w-full text-sm text-left">
-          <thead className="bg-gray-50/80 border-b border-gray-100 text-gray-500 uppercase text-[11px] font-bold tracking-wider">
-            <tr>
-              <th scope="col" className="px-6 py-4">ID</th>
-              <th scope="col" className="px-6 py-4">Data e Hora</th>
-              <th scope="col" className="px-6 py-4">Status</th>
-              <th scope="col" className="px-6 py-4 text-right">Ações</th>
+          <thead>
+            <tr style={{ borderBottom: "1px solid var(--ic-border)" }}>
+              {["Protocolo", "Data e Hora", "Paciente", "Médico", "Status", ""].map((h) => (
+                <th
+                  key={h}
+                  className="px-6 py-3.5 text-[11px] font-bold uppercase tracking-wider"
+                  style={{ color: "var(--ic-text-muted)", backgroundColor: "#F8FAFC" }}
+                >
+                  {h}
+                </th>
+              ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-50">
-            {atendimentos.map((atendimento) => (
-              <tr key={atendimento.id} className="hover:bg-blue-50/30 transition-colors group">
-                <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">
-                  #{atendimento.id.toString().padStart(4, '0')}
+          <tbody>
+            {atendimentos.map((a) => (
+              <tr
+                key={a.id}
+                className="group transition-colors hover:bg-[#F4F7FB]"
+                style={{ borderBottom: "1px solid #F1F5F9" }}
+              >
+                <td className="px-6 py-4 font-semibold text-sm" style={{ color: "var(--ic-blue)" }}>
+                  #{String(a.id).padStart(4, "0")}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-gray-500">
-                  {atendimento.dataHora 
-                    ? new Date(atendimento.dataHora).toLocaleString('pt-PT', { 
-                        day: '2-digit', month: '2-digit', year: 'numeric', 
-                        hour: '2-digit', minute: '2-digit' 
-                      }) 
-                    : 'Não agendado'}
+                <td className="px-6 py-4 text-sm" style={{ color: "var(--ic-text-muted)" }}>
+                  {a.dataHora
+                    ? new Date(a.dataHora).toLocaleString("pt-BR", {
+                        day: "2-digit", month: "2-digit", year: "numeric",
+                        hour: "2-digit", minute: "2-digit",
+                      })
+                    : "—"}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <Badge status={atendimento.status} />
+                <td className="px-6 py-4 font-medium text-sm" style={{ color: "var(--ic-text)" }}>
+                  {a.paciente?.nome ?? "—"}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                  <button className="text-gray-400 hover:text-blue-600 transition-colors opacity-0 group-hover:opacity-100">
-                    Detalhes &rarr;
+                <td className="px-6 py-4 text-sm" style={{ color: "var(--ic-text-muted)" }}>
+                  {a.medico?.nome ?? "—"}
+                </td>
+                <td className="px-6 py-4">
+                  <Badge status={a.status} />
+                </td>
+                <td className="px-6 py-4 text-right">
+                  <button
+                    className="text-xs font-semibold opacity-0 group-hover:opacity-100 transition-all px-3 py-1.5 rounded-lg"
+                    style={{ color: "var(--ic-blue)", backgroundColor: "rgba(34,114,204,0.08)" }}
+                  >
+                    Detalhes →
                   </button>
                 </td>
               </tr>
             ))}
             {atendimentos.length === 0 && (
               <tr>
-                <td colSpan={4} className="px-6 py-12 text-center text-gray-500">
-                  <div className="flex flex-col items-center justify-center">
-                    <svg className="w-12 h-12 text-gray-200 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" /></svg>
-                    Nenhum atendimento registado.
+                <td colSpan={6} className="px-6 py-16 text-center">
+                  <div className="flex flex-col items-center gap-3">
+                    <svg className="w-12 h-12" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                      style={{ color: "var(--ic-border)" }}>
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1}
+                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    <p className="text-sm font-medium" style={{ color: "var(--ic-text-muted)" }}>
+                      Nenhum atendimento registado
+                    </p>
                   </div>
                 </td>
               </tr>

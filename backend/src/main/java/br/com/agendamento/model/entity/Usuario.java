@@ -26,7 +26,7 @@ public class Usuario {
 
     private String email;
 
-    private String senhaHash;
+    private String senha;
 
     @Enumerated(EnumType.STRING)
     private PerfilAcesso perfil;
