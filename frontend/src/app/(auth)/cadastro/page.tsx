@@ -33,7 +33,13 @@ export default function CadastroPage() {
       if (response.ok) {
         router.push("/login?registered=1");
       } else {
-        setError("Erro ao criar conta. Verifique os dados e tente novamente.");
+        // Lê a mensagem específica que o backend envia (campo "mensagem")
+        try {
+          const body = await response.json();
+          setError(body.mensagem ?? body.erro ?? "Erro ao criar conta. Verifique os dados.");
+        } catch {
+          setError("Erro ao criar conta. Verifique os dados e tente novamente.");
+        }
       }
     } catch {
       setError("Não foi possível conectar ao servidor.");

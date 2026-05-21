@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/medicos")
@@ -28,5 +29,13 @@ public class MedicoController {
     @GetMapping
     public ResponseEntity<List<Medico>> listar() {
         return ResponseEntity.ok(service.listar());
+    }
+
+    /** Busca por CRM — usado pelo frontend para agendar consultas */
+    @GetMapping("/crm/{crm}")
+    public ResponseEntity<Medico> buscarPorCrm(@PathVariable String crm) {
+        Optional<Medico> m = service.buscarPorCrm(crm);
+        return m.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 }

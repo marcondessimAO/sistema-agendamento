@@ -4,9 +4,9 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 const inputStyle = {
-  border: "1.5px solid #E0E7EF",
-  backgroundColor: "#F8FAFC",
-  color: "#263238",
+  border: "1.5px solid var(--ic-border)",
+  backgroundColor: "var(--ic-surface-2)",
+  color: "var(--ic-text)",
   borderRadius: "0.75rem",
   padding: "0.625rem 1rem",
   fontSize: "0.875rem",
@@ -14,14 +14,15 @@ const inputStyle = {
   width: "100%",
 };
 
-const focusOn  = (e: React.FocusEvent<HTMLInputElement>) => (e.target.style.borderColor = "#2272CC");
-const focusOff = (e: React.FocusEvent<HTMLInputElement>) => (e.target.style.borderColor = "#E0E7EF");
+const focusOn  = (e: React.FocusEvent<HTMLInputElement>) => (e.target.style.borderColor = "var(--ic-blue)");
+const focusOff = (e: React.FocusEvent<HTMLInputElement>) => (e.target.style.borderColor = "var(--ic-border)");
 
 export default function MedicosPage() {
   const [medicos, setMedicos]     = useState<any[]>([]);
   const [showForm, setShowForm]   = useState(false);
   const [loading, setLoading]     = useState(false);
   const [success, setSuccess]     = useState("");
+  const [formError, setFormError] = useState("");
 
   // form fields
   const [nome, setNome]       = useState("");
@@ -54,6 +55,7 @@ export default function MedicosPage() {
   const handleCadastrar = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setFormError("");
     const token = getToken();
     if (!token) return;
 
@@ -71,13 +73,19 @@ export default function MedicosPage() {
         setSuccess("Médico cadastrado com sucesso!");
         setNome(""); setEmail(""); setSenha(""); setCrm("");
         setShowForm(false);
+        setFormError("");
         await fetchMedicos();
         setTimeout(() => setSuccess(""), 3000);
       } else {
-        alert("Erro ao cadastrar médico. Verifique os dados.");
+        try {
+          const body = await res.json();
+          setFormError(body.mensagem ?? body.erro ?? "Erro ao cadastrar médico. Verifique os dados.");
+        } catch {
+          setFormError("Erro ao cadastrar médico. Verifique os dados.");
+        }
       }
     } catch {
-      alert("Erro de conexão com o servidor.");
+      setFormError("Erro de conexão com o servidor.");
     } finally {
       setLoading(false);
     }
@@ -133,40 +141,50 @@ export default function MedicosPage() {
 
       {/* Cadastro Form */}
       {showForm && (
-        <div className="bg-white rounded-2xl p-6 mb-8"
-          style={{ border: "1px solid var(--ic-border)", boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
-          <h2 className="text-base font-bold mb-5" style={{ color: "var(--ic-text)" }}>
-            Novo Médico
-          </h2>
+        <div className="rounded-2xl p-6 mb-8"
+          style={{ backgroundColor: "var(--ic-surface)", border: "1px solid var(--ic-border)", boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
+          <h2 className="text-base font-bold mb-4" style={{ color: "var(--ic-text)" }}>Novo Médico</h2>
+
+          {/* Inline error */}
+          {formError && (
+            <div className="mb-4 px-4 py-3 rounded-xl flex items-center gap-2 text-sm font-medium"
+              style={{ backgroundColor: "rgba(229,62,62,0.08)", border: "1px solid rgba(229,62,62,0.2)", color: "var(--ic-danger)" }}>
+              <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                  d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              {formError}
+            </div>
+          )}
           <form onSubmit={handleCadastrar}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
               <div>
-                <label className="block text-sm font-semibold mb-1.5" style={{ color: "#263238" }}>
-                  Nome completo <span style={{ color: "#E53E3E" }}>*</span>
+                <label className="block text-sm font-semibold mb-1.5" style={{ color: "var(--ic-text)" }}>
+                  Nome completo <span style={{ color: "var(--ic-danger)" }}>*</span>
                 </label>
                 <input type="text" required value={nome} onChange={(e) => setNome(e.target.value)}
                   placeholder="Dr. João Silva" style={inputStyle}
                   onFocus={focusOn} onBlur={focusOff} />
               </div>
               <div>
-                <label className="block text-sm font-semibold mb-1.5" style={{ color: "#263238" }}>
-                  CRM <span style={{ color: "#E53E3E" }}>*</span>
+                <label className="block text-sm font-semibold mb-1.5" style={{ color: "var(--ic-text)" }}>
+                  CRM <span style={{ color: "var(--ic-danger)" }}>*</span>
                 </label>
                 <input type="text" required value={crm} onChange={(e) => setCrm(e.target.value)}
                   placeholder="Ex: CRM/SP 123456" style={inputStyle}
                   onFocus={focusOn} onBlur={focusOff} />
               </div>
               <div>
-                <label className="block text-sm font-semibold mb-1.5" style={{ color: "#263238" }}>
-                  E-mail <span style={{ color: "#E53E3E" }}>*</span>
+                <label className="block text-sm font-semibold mb-1.5" style={{ color: "var(--ic-text)" }}>
+                  E-mail <span style={{ color: "var(--ic-danger)" }}>*</span>
                 </label>
                 <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)}
                   placeholder="medico@clinica.com" style={inputStyle}
                   onFocus={focusOn} onBlur={focusOff} />
               </div>
               <div>
-                <label className="block text-sm font-semibold mb-1.5" style={{ color: "#263238" }}>
-                  Senha de acesso <span style={{ color: "#E53E3E" }}>*</span>
+                <label className="block text-sm font-semibold mb-1.5" style={{ color: "var(--ic-text)" }}>
+                  Senha de acesso <span style={{ color: "var(--ic-danger)" }}>*</span>
                 </label>
                 <input type="password" required value={senha} onChange={(e) => setSenha(e.target.value)}
                   placeholder="Mínimo 6 caracteres" style={inputStyle}
@@ -176,7 +194,7 @@ export default function MedicosPage() {
             <div className="flex justify-end gap-3" style={{ borderTop: "1px solid var(--ic-border)", paddingTop: "1rem" }}>
               <button type="button" onClick={() => setShowForm(false)}
                 className="px-5 py-2.5 rounded-xl text-sm font-semibold transition-colors"
-                style={{ color: "var(--ic-text-muted)", backgroundColor: "#F4F7FB" }}>
+                style={{ color: "var(--ic-text-muted)", backgroundColor: "var(--ic-surface-2)" }}>
                 Cancelar
               </button>
               <button type="submit" disabled={loading}
@@ -190,14 +208,14 @@ export default function MedicosPage() {
       )}
 
       {/* Table */}
-      <div className="bg-white rounded-2xl overflow-hidden"
-        style={{ border: "1px solid var(--ic-border)", boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
+      <div className="rounded-2xl overflow-hidden"
+        style={{ backgroundColor: "var(--ic-surface)", border: "1px solid var(--ic-border)", boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
         <table className="w-full text-sm">
           <thead>
             <tr style={{ borderBottom: "1px solid var(--ic-border)" }}>
               {["#", "Médico", "E-mail", "CRM"].map((h) => (
                 <th key={h} className="px-6 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider"
-                  style={{ color: "var(--ic-text-muted)", backgroundColor: "#F8FAFC" }}>
+                  style={{ color: "var(--ic-text-muted)", backgroundColor: "var(--ic-surface-2)" }}>
                   {h}
                 </th>
               ))}
